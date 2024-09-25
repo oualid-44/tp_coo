@@ -51,13 +51,11 @@ class Usine(Local):
 
 
 class Ressource(Objet):
-    def __init__(self):
-        pass
+    pass
 
 
 class SiegeSocial(Local):
-    def __init__(self):
-        pass
+    pass
 
 
 class QuantiteRessource(models.Model):
