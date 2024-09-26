@@ -56,8 +56,9 @@ class Usine(Local):
 
     def costs(self):
         somme_machine = sum(machine.prix for machine in self.machines.all())
-        usine_cost = self.ville.prix_m2 * self.surface
-        return usine_cost + somme_machine
+        local_cost = self.ville.prix_m2 * self.surface
+        stock_cost = sum(stock.costs() for stock in self.stock_set.all())
+        return local_cost + somme_machine + stock_cost
 
 
 class Ressource(Objet):
