@@ -9,3 +9,6 @@ class MachineModelTests(TestCase):
         self.assertEqual(Machine.objects.first().costs(), 0)
         Machine.objects.create(nom="TapiS", prix=500, n_serie="10023")
         self.assertEqual(Machine.objects.first().costs(), 1)
+'''self.assertEqual(Machine.objects.first().costs(), 0)
+AttributeError: 'NoneType' object has no attribute 'costs'
+'''
