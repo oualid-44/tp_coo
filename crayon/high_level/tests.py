@@ -2,18 +2,6 @@
 from django.test import TestCase
 from .models import Ville, Usine, Machine, Ressource, Stock
 
-"""
-class MachineModelTests(TestCase):
-    def test_machine_creation(self):
-        # self.assertEqual(Machine.objects.first().costs(), 0)
-        self.assertIsNone(Machine.objects.first())
-        Machine.objects.create(nom="TapiS", prix=500, n_serie=10023)
-        self.assertEqual(Machine.objects.first().costs(), 500)
-
-        Ville.objects.create(nom="Toulouse", code_postal=31000, prix_m2=200)
-        self.assertEqual(Ville.objects.first().prix_m2, 50)
-        """
-
 
 class CalculCostsTest(TestCase):
     def test_creatoion(self):
