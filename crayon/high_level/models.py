@@ -42,6 +42,9 @@ class Machine(models.Model):
     def __str__(self):
         return f"{self.nom} {self.prix} {self.n_serie}"
 
+    def costs(self):
+        return self.prix
+
 
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
@@ -50,11 +53,12 @@ class Usine(Local):
     def __str__(self):
         return ", ".join(machine.nom for machine in self.machines.all())
         # return f"{self.nom} - Usine"
-    
+
     def costs(self):
         somme_machine = sum(machine.prix for machine in self.machines.all())
         usine_cost = self.ville.prix_m2 * self.surface
         return usine_cost + somme_machine
+
 
 class Ressource(Objet):
     pass
@@ -80,7 +84,9 @@ class Etape(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     quantite_ressource = models.ForeignKey(QuantiteRessource, on_delete=models.CASCADE)
     duree = models.IntegerField()
-    etape_suivante = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    etape_suivante = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.nom} {self.machine} {self.quantite_ressource} {self.duree} {self.etape_suivante}"
@@ -96,6 +102,7 @@ class Produit(Objet):
 class Stock(models.Model):
     ressource = models.ForeignKey(Ressource, on_delete=models.PROTECT)
     nombre = models.IntegerField()
+    usine = models.ForeignKey(Usine, on_delete=models.PROTECT)
 
     def __str__(self):
         return f"{self.ressource} {self.nombre}"
