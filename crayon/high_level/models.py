@@ -13,6 +13,9 @@ class Ville(models.Model):
     def json(self):
         return {"nom": self.nom, "cp": self.code_postal, "prix_m2": self.prix_m2}
 
+    def json_extended(self):
+        return self.json()
+
 
 class Local(models.Model):
     ville = models.ForeignKey(Ville, on_delete=models.PROTECT)
@@ -51,6 +54,9 @@ class Machine(models.Model):
     def json(self):
         return {"nom": self.nom, "prix": self.prix, "n_serie": self.n_serie}
 
+    def json_extended(self):
+        return {"nom": self.nom, "prix": self.prix, "n_serie": self.n_serie}
+
 
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
@@ -65,19 +71,40 @@ class Usine(Local):
         stock_cost = sum(stock.costs() for stock in self.stock_set.all())
         return local_cost + somme_machine + stock_cost
 
-    def appro(self):
-        pass
-
     def json(self):
         return {"machines": [machine.nom for machine in self.machines.all()]}
 
+    def json_extended(self):
+        return {
+            "machines": [machine.json() for machine in self.machines.all()],
+            "surface": self.surface,
+            "prix_m2": self.ville.prix_m2,
+            "total_cost": self.costs(),
+        }
+
 
 class Ressource(Objet):
-    pass
+    def json_extended(self):
+        return {
+            "nom": self.nom,
+            "prix": self.prix,
+            "stock": [
+                {"usine": stock.usine.nom, "nombre": stock.nombre}
+                for stock in self.stock_sett.all()
+            ],
+        }
 
 
 class SiegeSocial(Local):
-    pass
+    def json_extended(self):
+        return {
+            "nom": self.nom,
+            "prix": self.prix,
+            "stock": [
+                {"usine": stock.usine.nom, "nombre": stock.nombre}
+                for stock in self.stock_sett.all()
+            ],
+        }
 
 
 class QuantiteRessource(models.Model):
@@ -92,6 +119,16 @@ class QuantiteRessource(models.Model):
 
     def json(self):
         return {"ressource": self.ressource.nom, "quantite": self.quantite}
+
+    def json_extended(self):
+        return {
+            "nom": self.nom,
+            "prix": self.prix,
+            "stock": [
+                {"usine": stock.usine.nom, "nombre": stock.nombre}
+                for stock in self.stock_sett.all()
+            ],
+        }
 
 
 class Etape(models.Model):
@@ -123,6 +160,7 @@ class Produit(Objet):
 
     def json(self):
         return {"premiere_etape": self.premiere_etape.nom}
+
 
 class Stock(models.Model):
     ressource = models.ForeignKey(Ressource, on_delete=models.PROTECT)
