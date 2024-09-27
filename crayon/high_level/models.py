@@ -10,6 +10,9 @@ class Ville(models.Model):
     def __str__(self):
         return f"{self.nom} {self.code_postal}"
 
+    def json(self):
+        return {"nom": self.nom, "cp": self.code_postal, "prix_m2": self.prix_m2}
+
 
 class Local(models.Model):
     ville = models.ForeignKey(Ville, on_delete=models.PROTECT)
@@ -45,6 +48,9 @@ class Machine(models.Model):
     def costs(self):
         return self.prix
 
+    def json(self):
+        return {"nom": self.nom, "prix": self.prix, "n_serie": self.n_serie}
+
 
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
@@ -59,6 +65,12 @@ class Usine(Local):
         local_cost = self.ville.prix_m2 * self.surface
         stock_cost = sum(stock.costs() for stock in self.stock_set.all())
         return local_cost + somme_machine + stock_cost
+
+    def appro(self):
+        pass
+
+    def json(self):
+        return {"machines": [machine.nom for machine in self.machines.all()]}
 
 
 class Ressource(Objet):
@@ -79,6 +91,9 @@ class QuantiteRessource(models.Model):
     def costs(self):
         return self.ressource.prix * self.quantite
 
+    def json(self):
+        return {"ressource": self.ressource.nom}
+
 
 class Etape(models.Model):
     nom = models.CharField(max_length=100)
@@ -92,12 +107,23 @@ class Etape(models.Model):
     def __str__(self):
         return f"{self.nom} {self.machine} {self.quantite_ressource} {self.duree} {self.etape_suivante}"
 
+    def json(self):
+        return {
+            "nom": self.nom,
+            "quantite_ressource": self.quantite_ressource.quantite,
+            "duree": self.duree,
+            "etape_suivante": self.etape_suivante.nom,
+        }
+
 
 class Produit(Objet):
     premiere_etape = models.ForeignKey(Etape, on_delete=models.PROTECT)
 
     def __str__(self):
         return f"{self.nom} {self.premiere_etape}"
+
+    def json(self):
+        return {"premiere_etape": self.premiere_etape.nom}
 
 
 class Stock(models.Model):
@@ -110,3 +136,10 @@ class Stock(models.Model):
 
     def costs(self):
         return self.ressource.prix * self.nombre
+
+    def json(self):
+        return {
+            "ressource": self.ressource.nom,
+            "nombre": self.nombre,
+            "usine": self.usine.nom,
+        }
