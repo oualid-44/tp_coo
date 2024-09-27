@@ -11,7 +11,7 @@ class VilleDetailView(DetailView):
         return JsonResponse(self.object.json())
 
 
-class UsineDetailVieew(DetailView):
+class UsineDetailView(DetailView):
     model = Usine
 
     def render_to_response(self, *args, **kwargs):
