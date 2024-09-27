@@ -54,7 +54,6 @@ class Machine(models.Model):
 
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
-    # stocks = models.ManyToManyField('Stock', blank=True)
 
     def __str__(self):
         return ", ".join(machine.nom for machine in self.machines.all())
@@ -92,7 +91,7 @@ class QuantiteRessource(models.Model):
         return self.ressource.prix * self.quantite
 
     def json(self):
-        return {"ressource": self.ressource.nom}
+        return {"ressource": self.ressource.nom, "quantite": self.quantite}
 
 
 class Etape(models.Model):
@@ -124,7 +123,6 @@ class Produit(Objet):
 
     def json(self):
         return {"premiere_etape": self.premiere_etape.nom}
-
 
 class Stock(models.Model):
     ressource = models.ForeignKey(Ressource, on_delete=models.PROTECT)

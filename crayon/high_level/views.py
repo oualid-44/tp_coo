@@ -24,7 +24,6 @@ class MachineDetailView(DetailView):
     def render_to_response(self, *args, **kwargs):
         return JsonResponse(self.object.json())
 
-
 class RessourceDetailView(DetailView):
     model = Ressource
 
@@ -37,3 +36,6 @@ class StockDetailView(DetailView):
 
     def render_to_response(self, *args, **kwargs):
         return JsonResponse(self.object.json())
+
+class StockDetailView(DetailView):
+    model = Stock
