@@ -28,6 +28,13 @@ class Local(models.Model):
     class Meta:
         abstract = True
 
+    def json_extended(self):
+        return {
+            "nom": self.nom,
+            "surface": self.surface,
+            "ville": self.ville.json_extended(),
+        }
+
 
 class Objet(models.Model):
     nom = models.CharField(max_length=100)
@@ -38,6 +45,9 @@ class Objet(models.Model):
 
     class Meta:
         abstract = True
+
+    def json_extended(self):
+        return {"nom": self.nom, "prix": self.prix}
 
 
 class Machine(models.Model):
@@ -55,7 +65,7 @@ class Machine(models.Model):
         return {"nom": self.nom, "prix": self.prix, "n_serie": self.n_serie}
 
     def json_extended(self):
-        return {"nom": self.nom, "prix": self.prix, "n_serie": self.n_serie}
+        return {self.json()}
 
 
 class Usine(Local):
@@ -76,9 +86,11 @@ class Usine(Local):
 
     def json_extended(self):
         return {
-            "machines": [machine.json() for machine in self.machines.all()],
+            "nom": self.nom,
             "surface": self.surface,
-            "prix_m2": self.ville.prix_m2,
+            "ville": self.ville.json_extended(),
+            "machines": [machine.json_extended for machine in self.machines.all()],
+            "stocks": [stock.json_extended for stock in self.stock_set.all()],
             "total_cost": self.costs(),
         }
 
