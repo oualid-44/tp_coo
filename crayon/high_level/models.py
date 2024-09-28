@@ -109,14 +109,7 @@ class Ressource(Objet):
 
 class SiegeSocial(Local):
     def json_extended(self):
-        return {
-            "nom": self.nom,
-            "prix": self.prix,
-            "stock": [
-                {"usine": stock.usine.nom, "nombre": stock.nombre}
-                for stock in self.stock_sett.all()
-            ],
-        }
+        return super().json_extended()
 
 
 class QuantiteRessource(models.Model):
@@ -134,12 +127,9 @@ class QuantiteRessource(models.Model):
 
     def json_extended(self):
         return {
-            "nom": self.nom,
-            "prix": self.prix,
-            "stock": [
-                {"usine": stock.usine.nom, "nombre": stock.nombre}
-                for stock in self.stock_sett.all()
-            ],
+            "ressource": self.ressource.json_extended(),
+            "quantite": self.quantite,
+            "costs": self.costs(),
         }
 
 
@@ -158,9 +148,12 @@ class Etape(models.Model):
     def json(self):
         return {
             "nom": self.nom,
-            "quantite_ressource": self.quantite_ressource.quantite,
+            "machine": self.machine.json_extended(),
+            "quantite_ressource": self.quantite_ressource.json_extended(),
             "duree": self.duree,
-            "etape_suivante": self.etape_suivante.nom,
+            "etape_suivante": self.etape_suivante.json_extended()
+            if self.etape_suivante
+            else None,
         }
 
 
@@ -172,6 +165,13 @@ class Produit(Objet):
 
     def json(self):
         return {"premiere_etape": self.premiere_etape.nom}
+
+    def json_extended(self):
+        return {
+            "nom": self.nom,
+            "prix": self.prix,
+            "premiere_etape": self.premiere_etape.json_extended(),
+        }
 
 
 class Stock(models.Model):
@@ -191,3 +191,12 @@ class Stock(models.Model):
             "nombre": self.nombre,
             "usine": self.usine.nom,
         }
+
+    def json_extended(self):
+        return {
+            "ressource": self.ressource.json_extended(),
+            "nombre": self.nombre,
+            "usine": self.usine.json_extended(),
+            "costs": self.costs(),
+        }
+        # Ou bien self.usine.nom si l'extentet est non necessaire
