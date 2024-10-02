@@ -65,7 +65,7 @@ class Machine(models.Model):
         return {"nom": self.nom, "prix": self.prix, "n_serie": self.n_serie}
 
     def json_extended(self):
-        return {self.json()}
+        return self.json()
 
 
 class Usine(Local):
@@ -146,6 +146,14 @@ class Etape(models.Model):
         return f"{self.nom} {self.machine} {self.quantite_ressource} {self.duree} {self.etape_suivante}"
 
     def json(self):
+        return {
+            "nom": self.nom,
+            "quantite_ressource": self.quantite_ressource.quantite,
+            "duree": self.duree,
+            "etape_suivante": self.etape_suivante.nom,
+        }
+
+    def json_extended(self):
         return {
             "nom": self.nom,
             "machine": self.machine.json_extended(),
