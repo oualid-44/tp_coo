@@ -1,9 +1,10 @@
-#include <iostream>
-using namespace std;
 #include <cpr/cpr.h>
 
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
+using namespace std;
+using json = nlohmann::json;
 
 class Ville {
  private:
@@ -27,10 +28,17 @@ auto main() -> int {
   cout << v;
 
   cpr::Response r = cpr::Get(cpr::Url{"http://localhost:8000/ville/1"});
-  std::cout << r.url << std::endl;
-  std::cout << r.status_code << std::endl;
-  std::cout << r.header["content-type"] << std::endl;
-  std::cout << r.text << std::endl;
+  cout << r.url << std::endl;
+  cout << r.status_code << std::endl;
+  cout << r.header["content-type"] << std::endl;
+  cout << r.text << std::endl;
+
+  json data = json::parse(r.text);
+  cout << data << endl;
+
+  cout << data["nom"] << endl;
+  cout << data["cp"] << endl;
+  cout << data["prix_m2"] << endl;
 
   return 0;
 }
