@@ -3,6 +3,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <vector>
 using namespace std;
 using json = nlohmann::json;
 
@@ -36,88 +37,112 @@ class Ville {
   };
 };
 
-/*
-class Local
-{
-        private:
-                string nom;
-                unique_ptr<Ville> ville;
-                int surface;
-        public:
-                Local(string name, unique_ptr<Ville> v, int surf) : nom(name),
-ville(v), surface(surf) {}; ~Local()
-}
+class Objet {
+ protected:
+  string nom;
+  int prix;
 
+ public:
+  Objet(string name, int price) : nom(name), prix(price) {};
+  virtual ~Objet() = default;
+};
 
-class Objet
-{}
+class Local {
+ protected:
+  unique_ptr<Ville> ville;
+  string nom;
+  int surface;
 
-class SiegeSocial : public Local
-{
-}
+ private:
+  Local(unique_ptr<Ville> v, string name, int surf)
+      : ville(move(v)), nom(name), surface(surf) {};
+  virtual ~Local() = default;
+};
 
-class Machine
-{
-        private:
-                string nom;
-                int prix;
-                int n_serie;
+class Machine {
+ private:
+  string nom;
+  int prix;
+  int n_serie;
 
-        public:
-                Machine(string name, int price, int ns) : nom(name),
-prix(price), n_serie(ns) {}; ~Machine();
-}
-class Usine
-{
-        private :
-                Machine machines;
+ public:
+  Machine(string name, int price, int nser)
+      : nom(name), prix(price), n_serie(nser) {};
+  ~Machine();
+};
 
-        public
-}
+class Ressource : public Objet {
+ public:
+  Ressource(string name, int price) : Objet(name, price) {};
+} :
 
-class Ressource
-{
-        private :
+    class QuantiteRessource {
+ private:
+  int quantite;
+  unique_ptr<Ressource> ressource;
 
+ public:
+  QuantiteRessource(int quant, unique_ptr<Ressource> rsc)
+      : quantite(quant), ressource(move(rsc)) {};
+  ~QuantiteRessource();
+};
 
-        public
-}
+class SiegeSocial : public Local {
+ public:
+  SiegeSocial(unique_ptr<Ville> v, string name, int surf)
+      : Local(move(v), name, surf) {};
+  ~SiegeSocial();
+};
 
-class stock
-{
-        private :
+class Usine : public Local {
+ private:
+  vector<unique_ptr<Machine>> machines;
 
+ public:
+  Usine(unique_ptr<Ville> v, string name, int surf)
+      : Local(move(v), name, surf) {};
+  ~Usine();
+};
 
-        public
-}
+class Stock {
+ private:
+  unique_ptr<Ressource> ressource;
+  int nombre;
+  unique_ptr<Usine> usine;
 
-class QuantiteRessource
-{
-        private :
-                string ressource ;
-                int nombre;
+ public:
+  Stock(unique_ptr<Ressource> rsc, int nbr, unique_ptr<Usine> usn)
+      : ressource(move(rsc)), nombre(nbr), using(move(usn)) {};
+  ~Stock();
+};
 
-        public
-}
+class Etape {
+ private:
+  string nom;
+  unique_ptr<Machine> machine;
+  unique_ptr<QuantiteRessource> quantite_ressource;
+  int duree;
+  optional<shared_ptr<Etape>> etape_suivante = nullopt;
 
-class Etape
-{
-        private :
-                string nom ;
-                Machine machine;
-                QuantiteRessource quantite_ressource;
-                int dure;
-                Etape etape_suivante;
-        public
-}
+ public:
+  Etape(string name, unique_ptr<Machine> mach,
+        unique_ptr<QuantiteRessource> quantress, int dur,
+        optional<shared_ptr<Etape>> etp_suiv = nullopt)
+      : nom(name),
+        machine(mach),
+        quantite_ressource(quantress),
+        duree(dur),
+        etape_suivante(etp_suiv) {};
+};
 
-class Produit
-{
-        private :
+class Produit : Objet {
+ private:
+  unique_ptr<Etape> premiere_etape;
 
+ public:
+  Produit(unique_ptr<Etape> prem_etp) : premiere_etape(prem_ptr);
+};
 
-        public
-} */
 auto main() -> int {
   Ville v("Paris", 93000, 500);
   cout << v;
