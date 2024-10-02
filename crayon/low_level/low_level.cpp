@@ -22,7 +22,17 @@ class Ville {
   };
   Ville(json data)
       : nom(data["nom"]), code_postale(data["cp"]), prix_m2(data["prix_m2"]) {};
-  Ville(int id) {};
+    Ville(int id) {
+    cpr::Response r = cpr::Get(cpr::Url{"http://localhost:8000/ville/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      nom = data["nom"];
+      code_postale = data["cp"];
+      prix_m2 = data["prix_m2"];
+    } else {
+      cout << "Error fetching data for Ville with id " << id << endl;
+    }
+  };
 };
 
 auto main() -> int {
