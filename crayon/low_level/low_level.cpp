@@ -56,5 +56,8 @@ auto main() -> int {
   Ville t(data);
   cout << t;
 
+  Ville q(2);
+  cout << q;
+
   return 0;
 }
