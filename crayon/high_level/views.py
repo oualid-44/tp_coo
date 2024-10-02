@@ -1,4 +1,5 @@
 # Create your views here.
+from django.http.response import HttpResponse as HttpResponse
 from django.views.generic import DetailView
 from .models import (
     Ville,
@@ -48,6 +49,27 @@ class RessourceDetailView(DetailView):
         return JsonResponse(self.object.json())
 
 
+class QuantiteRessourceDetailView(DetailView):
+    model = QuantiteRessource
+
+    def render_to_response(self, *args, **kwargs):
+        return JsonResponse(self.object.json())
+
+
+class EtapeDetailView(DetailView):
+    model = Etape
+
+    def render_to_response(self, *args, **kwargs):
+        return JsonResponse(self.object.json())
+
+
+class ProduitDetailView(DetailView):
+    model = Produit
+
+    def render_to_response(self):
+        return JsonResponse(self.object.json())
+
+
 class StockDetailView(DetailView):
     model = Stock
 
@@ -56,7 +78,7 @@ class StockDetailView(DetailView):
 
 
 class VilleAPIView(APIView):
-    def get(self, request, *arg, **kwags):
+    def get(self, request, *args, **kwags):
         villes = Ville.objects.all()
         ville_info = [ville.json_extended() for ville in villes]
 
@@ -64,7 +86,7 @@ class VilleAPIView(APIView):
 
 
 class UsineAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         usines = Usine.objects.all()
         usines_info = [usine.json_extended() for usine in usines]
 
@@ -72,7 +94,7 @@ class UsineAPIView(APIView):
 
 
 class MachineAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         machines = Machine.objects.all()
         machines_info = [machine.json_extended() for machine in machines]
 
@@ -80,7 +102,7 @@ class MachineAPIView(APIView):
 
 
 class RessourceAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         ressources = Ressource.objects.all()
         ressources_info = [ressource.json_extended() for ressource in ressources]
 
@@ -88,7 +110,7 @@ class RessourceAPIView(APIView):
 
 
 class SiegeSocialAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         siegessociaux = SiegeSocial.objects.all()
         siegessociaux_info = [
             siegesocial.json_extended() for siegesocial in siegessociaux
@@ -98,7 +120,7 @@ class SiegeSocialAPIView(APIView):
 
 
 class QuantiteRessourceAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         quantitesressources = QuantiteRessource.objects.all()
         quantitesressources_info = [
             quantiteressource.json_extended()
@@ -109,7 +131,7 @@ class QuantiteRessourceAPIView(APIView):
 
 
 class EtapeAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         etapes = Etape.objects.all()
         etapes_info = [etape.json_extended() for etape in etapes]
 
@@ -117,7 +139,7 @@ class EtapeAPIView(APIView):
 
 
 class ProduitAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         produits = Produit.objects.all()
         produits_info = [produit.json_extended() for produit in produits]
 
@@ -125,7 +147,7 @@ class ProduitAPIView(APIView):
 
 
 class StockAPIView(APIView):
-    def get(self, request, *arg, **kwargs):
+    def get(self, request, *args, **kwargs):
         stocks = Stock.objects.all()
         stocks_info = [stock.json_extended() for stock in stocks]
 
