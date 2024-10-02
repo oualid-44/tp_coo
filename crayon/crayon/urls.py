@@ -49,7 +49,7 @@ urlpatterns = [
         name="quantiteressource-detail",
     ),
     path("etape/<int:pk>/", EtapeDetailView.as_view(), name="etape-detail"),
-    path("produit/<int:pk/>", ProduitDetailView.as_view(), name="produit-detail"),
+    path("produit/<int:pk>", ProduitDetailView.as_view(), name="produit-detail"),
     path("stock/<int:pk>/", StockDetailView.as_view(), name="stock-detail"),
     path("api/villes/", VilleAPIView.as_view(), name="ville-api"),
     path("api/usines/", UsineAPIView.as_view(), name="usine-api"),
