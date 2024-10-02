@@ -17,14 +17,16 @@ class Ville {
       : nom(name), code_postale(cp), prix_m2(prix) {};
   ~Ville() {};
   friend ostream& operator<<(ostream& out, const Ville& v) {
-    return out << "Nom: " << v.nom << " Code postale: " << v.code_postale
-               << " Prix m2 :" << v.prix_m2 << endl;
+    return out << "Nom: " << v.nom << ", Code postale: " << v.code_postale
+               << ", Prix m2: " << v.prix_m2 << endl;
   };
+  Ville(json data)
+      : nom(data["nom"]), code_postale(data["cp"]), prix_m2(data["prix_m2"]) {};
+  Ville(int id) {};
 };
 
 auto main() -> int {
-  Ville v("Toulouse", 31000, 100);
-
+  Ville v("Paris", 93000, 500);
   cout << v;
 
   cpr::Response r = cpr::Get(cpr::Url{"http://localhost:8000/ville/1"});
@@ -39,6 +41,9 @@ auto main() -> int {
   cout << data["nom"] << endl;
   cout << data["cp"] << endl;
   cout << data["prix_m2"] << endl;
+
+  Ville t(data);
+  cout << t;
 
   return 0;
 }
