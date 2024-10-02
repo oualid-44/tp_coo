@@ -36,6 +36,88 @@ class Ville {
   };
 };
 
+/*
+class Local
+{
+        private:
+                string nom;
+                unique_ptr<Ville> ville;
+                int surface;
+        public:
+                Local(string name, unique_ptr<Ville> v, int surf) : nom(name),
+ville(v), surface(surf) {}; ~Local()
+}
+
+
+class Objet
+{}
+
+class SiegeSocial : public Local
+{
+}
+
+class Machine
+{
+        private:
+                string nom;
+                int prix;
+                int n_serie;
+
+        public:
+                Machine(string name, int price, int ns) : nom(name),
+prix(price), n_serie(ns) {}; ~Machine();
+}
+class Usine
+{
+        private :
+                Machine machines;
+
+        public
+}
+
+class Ressource
+{
+        private :
+
+
+        public
+}
+
+class stock
+{
+        private :
+
+
+        public
+}
+
+class QuantiteRessource
+{
+        private :
+                string ressource ;
+                int nombre;
+
+        public
+}
+
+class Etape
+{
+        private :
+                string nom ;
+                Machine machine;
+                QuantiteRessource quantite_ressource;
+                int dure;
+                Etape etape_suivante;
+        public
+}
+
+class Produit
+{
+        private :
+
+
+        public
+} */
 auto main() -> int {
   Ville v("Paris", 93000, 500);
   cout << v;
