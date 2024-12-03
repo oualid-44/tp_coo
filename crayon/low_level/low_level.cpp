@@ -69,11 +69,35 @@ class Machine {
   Machine(string name, int price, int nser)
       : nom(name), prix(price), n_serie(nser) {};
   ~Machine() {};
+  Machine(int id) {
+    cpr::Response r =
+        cpr::Get(cpr::Url{"http://localhost:8000/machine/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      nom = data["nom"];
+      prix = data["prix"];
+      n_serie = data["n_serie"];
+    } else {
+      cout << "Erreur avec " << id << endl;
+    }
+  };
 };
 
 class Ressource : public Objet {
  public:
   Ressource(string name, int price) : Objet(name, price) {};
+
+  Ressource(int id) : Objet("", 0) {
+    cpr::Response r =
+        cpr::Get(cpr::Url{"http://localhost:8000/ressource/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      nom = data["nom"];
+      prix = data["prix"];
+    } else {
+      cout << "Erreur avec " << id << endl;
+    }
+  };
 };
 
 class QuantiteRessource {
@@ -85,6 +109,18 @@ class QuantiteRessource {
   QuantiteRessource(int quant, unique_ptr<Ressource> rsc)
       : quantite(quant), ressource(move(rsc)) {};
   ~QuantiteRessource() {};
+
+  QuantiteRessource(int id) {
+    cpr::Response r = cpr::Get(
+        cpr::Url{"http://localhost:8000/quantiteressource/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      quantite = data["quantite"];
+      ressource = make_unique<Ressource>(data["ressource_id"]);
+    } else {
+      cout << "Erreur avec " << id << endl;
+    }
+  };
 };
 
 class SiegeSocial : public Local {
@@ -102,6 +138,23 @@ class Usine : public Local {
   Usine(unique_ptr<Ville> v, string name, int surf)
       : Local(move(v), name, surf) {};
   ~Usine() {};
+
+  Usine(int id) : Local(nullptr, "", 0) {
+    cpr::Response r =
+        cpr::Get(cpr::Url{"http://localhost:8000/usine/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      ville = make_unique<Ville>(data["ville_id"]);
+      nom = data["nom"];
+      surface = data["surface"];
+
+      for (const auto& mach : data["machines"]) {
+        machines.push_back(make_unique<Machine>(mach["id"]));
+      }
+    } else {
+      cout << "Erreur avec " << id << endl;
+    }
+  };
 };
 
 class Stock {
@@ -114,6 +167,19 @@ class Stock {
   Stock(unique_ptr<Ressource> rsc, int nbr, unique_ptr<Usine> usn)
       : ressource(move(rsc)), nombre(nbr), usine(move(usn)) {};
   ~Stock() {};
+
+  Stock(int id) {
+    cpr::Response r =
+        cpr::Get(cpr::Url{"http://localhost:8000/stock/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      ressource = make_unique<Ressource>(data["ressource_id"]);
+      nombre = data["nombre"];
+      usine = make_unique<Usine>(data["usine_id"]);
+    } else {
+      cout << "Erreur avec " << id << endl;
+    }
+  };
 };
 
 class Etape {
@@ -133,6 +199,24 @@ class Etape {
         quantite_ressource(move(quantress)),
         duree(dur),
         etape_suivante(etp_suiv) {};
+
+  Etape(int id) {
+    cpr::Response r =
+        cpr::Get(cpr::Url{"http://localhost:8000/etape/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      nom = data["nom"];
+      machine = make_unique<Machine>(data["machine_id"]);
+      quantite_ressource =
+          make_unique<QuantiteRessource>(data["quantite_ressource_id"]);
+      duree = data["duree"];
+      if (data.contains("etape_suivante_id")) {
+        etape_suivante = make_shared<Etape>(data["etape_suivante_id"]);
+      }
+    } else {
+      cout << "Erreur avec Etape id: " << id << endl;
+    }
+  }
 };
 
 class Produit : Objet {
@@ -142,6 +226,19 @@ class Produit : Objet {
  public:
   Produit(string name, int price, unique_ptr<Etape> prem_etp)
       : Objet(name, price), premiere_etape(move(prem_etp)) {};
+
+  Produit(int id) : Objet("", 0) {
+    cpr::Response r =
+        cpr::Get(cpr::Url{"http://localhost:8000/produit/" + to_string(id)});
+    if (r.status_code == 200) {
+      json data = json::parse(r.text);
+      nom = data["nom"];
+      prix = data["prix"];
+      premiere_etape = make_unique<Etape>(data["premiere_etape_id"]);
+    } else {
+      cout << "Erreur avec Produit id: " << id << endl;
+    }
+  }
 };
 
 auto main() -> int {
