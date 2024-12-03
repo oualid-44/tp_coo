@@ -129,8 +129,8 @@ class Etape {
         unique_ptr<QuantiteRessource> quantress, int dur,
         optional<shared_ptr<Etape>> etp_suiv = nullopt)
       : nom(name),
-        machine(mach),
-        quantite_ressource(quantress),
+        machine(move(mach)),
+        quantite_ressource(move(quantress)),
         duree(dur),
         etape_suivante(etp_suiv) {};
 };
@@ -140,7 +140,7 @@ class Produit : Objet {
   unique_ptr<Etape> premiere_etape;
 
  public:
-  Produit(unique_ptr<Etape> prem_etp) : premiere_etape(prem_etp);
+  Produit(unique_ptr<Etape> prem_etp) : premiere_etape(move(prem_etp)) {};
 };
 
 auto main() -> int {
