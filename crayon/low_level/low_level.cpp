@@ -53,7 +53,7 @@ class Local {
   string nom;
   int surface;
 
- private:
+ public:
   Local(unique_ptr<Ville> v, string name, int surf)
       : ville(move(v)), nom(name), surface(surf) {};
   virtual ~Local() = default;
@@ -68,15 +68,15 @@ class Machine {
  public:
   Machine(string name, int price, int nser)
       : nom(name), prix(price), n_serie(nser) {};
-  ~Machine();
+  ~Machine() {};
 };
 
 class Ressource : public Objet {
  public:
   Ressource(string name, int price) : Objet(name, price) {};
-} :
+};
 
-    class QuantiteRessource {
+class QuantiteRessource {
  private:
   int quantite;
   unique_ptr<Ressource> ressource;
@@ -84,14 +84,14 @@ class Ressource : public Objet {
  public:
   QuantiteRessource(int quant, unique_ptr<Ressource> rsc)
       : quantite(quant), ressource(move(rsc)) {};
-  ~QuantiteRessource();
+  ~QuantiteRessource() {};
 };
 
 class SiegeSocial : public Local {
  public:
   SiegeSocial(unique_ptr<Ville> v, string name, int surf)
       : Local(move(v), name, surf) {};
-  ~SiegeSocial();
+  ~SiegeSocial() {};
 };
 
 class Usine : public Local {
@@ -101,7 +101,7 @@ class Usine : public Local {
  public:
   Usine(unique_ptr<Ville> v, string name, int surf)
       : Local(move(v), name, surf) {};
-  ~Usine();
+  ~Usine() {};
 };
 
 class Stock {
@@ -112,8 +112,8 @@ class Stock {
 
  public:
   Stock(unique_ptr<Ressource> rsc, int nbr, unique_ptr<Usine> usn)
-      : ressource(move(rsc)), nombre(nbr), using(move(usn)) {};
-  ~Stock();
+      : ressource(move(rsc)), nombre(nbr), usine(move(usn)) {};
+  ~Stock() {};
 };
 
 class Etape {
@@ -140,7 +140,7 @@ class Produit : Objet {
   unique_ptr<Etape> premiere_etape;
 
  public:
-  Produit(unique_ptr<Etape> prem_etp) : premiere_etape(prem_ptr);
+  Produit(unique_ptr<Etape> prem_etp) : premiere_etape(prem_etp);
 };
 
 auto main() -> int {
