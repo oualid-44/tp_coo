@@ -140,7 +140,8 @@ class Produit : Objet {
   unique_ptr<Etape> premiere_etape;
 
  public:
-  Produit(unique_ptr<Etape> prem_etp) : premiere_etape(move(prem_etp)) {};
+  Produit(string name, int price, unique_ptr<Etape> prem_etp)
+      : Objet(name, price), premiere_etape(move(prem_etp)) {};
 };
 
 auto main() -> int {
