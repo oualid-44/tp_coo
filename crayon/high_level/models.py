@@ -96,6 +96,9 @@ class Usine(Local):
 
 
 class Ressource(Objet):
+    def json(self):
+        return {"nom": self.nom, "prix": self.prix}
+
     def json_extended(self):
         return {
             "nom": self.nom,

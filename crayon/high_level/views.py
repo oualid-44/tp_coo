@@ -66,7 +66,7 @@ class EtapeDetailView(DetailView):
 class ProduitDetailView(DetailView):
     model = Produit
 
-    def render_to_response(self):
+    def render_to_response(self, *args, **kwargs):
         return JsonResponse(self.object.json())
 
 
