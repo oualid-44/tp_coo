@@ -38,10 +38,6 @@ Ce projet est une application web et une application bas niveau combinant Django
 
 2. **Configurer le dépôt distant**
    ```bash
-   ssh-keygen -t ed25519
-   cat ~/.ssh/id_ed25519.pub
-   git config --global user.name "Votre Nom"
-   git config --global user.email "votre.email@example.com"
    git branch -M main
    git remote add origin git@github.com:utilisateur/depot.git
    git add .
